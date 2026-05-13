@@ -133,14 +133,7 @@ uppercase tracking-wide">Kapasitas
                         (Stok)</label>
 
                     <input type="number" name="stock" value="{{ old('stock', $event->stock) }}"
-                        class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100
-
-Modul Praktikum : [Digital Bisnis [SI148]] Hal. 53 dari 67
-
-Universitas AMIKOM Yogyakarta
-Fakultas Ilmu Komputer - Program Studi S1 Sistem Informasi
-
-rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600
+                        class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600
 outline-none transition font-medium"
                         required min="1">
 
