@@ -37,6 +37,15 @@
                 @enderror
             </div>
 
+            <div class="pt-2">
+                <p class="text-sm font-bold text-slate-700 mb-2">Preview Logo</p>
+                <div
+                    class="w-24 h-24 rounded-2xl border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden">
+                    <img id="logoPreview" src="{{ old('logo_url') ?: 'https://placehold.co/200x200?text=Logo' }}"
+                        alt="Preview Logo" class="w-full h-full object-cover">
+                </div>
+            </div>
+
             <div class="pt-6 flex gap-4">
                 <a href="{{ route('admin.partners.index') }}"
                     class="px-6 py-3 border-2 border-slate-200 rounded-xl font-bold text-slate-700 hover:bg-slate-50 transition">
@@ -49,4 +58,23 @@
             </div>
         </form>
     </div>
+
+    <script>
+        (function() {
+            const input = document.getElementById('logo_url');
+            const preview = document.getElementById('logoPreview');
+            if (!input || !preview) return;
+
+            const fallback = 'https://placehold.co/200x200?text=Logo';
+
+            input.addEventListener('input', function() {
+                const value = this.value.trim();
+                preview.src = value.length ? value : fallback;
+            });
+
+            preview.addEventListener('error', function() {
+                preview.src = fallback;
+            });
+        })();
+    </script>
 @endsection

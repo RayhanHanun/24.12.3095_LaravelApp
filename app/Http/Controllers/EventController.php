@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\Partner;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -21,8 +22,9 @@ class EventController extends Controller
         }
 
         $events = $eventsQuery->get();
+        $partners = Partner::orderBy('id', 'desc')->get();
 
-        return view('welcome', compact('categories', 'events'));
+        return view('welcome', compact('categories', 'events', 'partners'));
     }
 
     public function show()

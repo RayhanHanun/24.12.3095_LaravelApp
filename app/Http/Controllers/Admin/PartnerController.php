@@ -8,10 +8,18 @@ use Illuminate\Http\Request;
 
 class PartnerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $partners = Partner::all();
-        return view('admin.partners.index', compact('partners'));
+        $search = $request->query('search');
+
+        $partners = Partner::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('name', 'LIKE', '%' . $search . '%', 'and');
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+
+        return view('admin.partners.index', compact('partners', 'search'));
     }
 
     public function create()

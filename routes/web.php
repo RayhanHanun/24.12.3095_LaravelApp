@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PartnerController;
 
 // Halaman Beranda (Home)
@@ -28,6 +29,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     // Halaman Kelola Event Admin (URL: /admin/events)
     Route::resource('events', AdminEventController::class)->except(['show']);
+
+    // Halaman Kelola Kategori Admin (URL: /admin/categories)
+    Route::resource('categories', CategoryController::class)->except(['show']);
 
     // Halaman Kelola Partner Admin (URL: /admin/partners)
     Route::resource('partners', PartnerController::class)->except(['show']);
