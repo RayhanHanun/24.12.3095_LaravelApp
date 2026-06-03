@@ -2,10 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\TransactionController;
 
 // Halaman Beranda (Home)
 Route::get('/', [EventController::class, 'index'])->name('welcome');
@@ -21,21 +23,24 @@ Route::get('/ticket', function () {
     return view('ticket');
 })->name('ticket');
 
+Route::get('/login', function () {
+    return redirect()->route('admin.login');
+})->name('login');
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login'])->name('login.post');
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    // Halaman Dashboard Admin (URL: /admin)
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::middleware(['auth', 'admin'])->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('admin.dashboard');
+        });
 
-    // Halaman Kelola Event Admin (URL: /admin/events)
-    Route::resource('events', AdminEventController::class)->except(['show']);
-
-    // Halaman Kelola Kategori Admin (URL: /admin/categories)
-    Route::resource('categories', CategoryController::class)->except(['show']);
-
-    // Halaman Kelola Partner Admin (URL: /admin/partners)
-    Route::resource('partners', PartnerController::class)->except(['show']);
-
-    // Halaman Laporan Transaksi Admin (URL: /admin/transactions)
-    Route::get('/transactions', [AdminEventController::class, 'transactions'])->name('transactions.index');
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::resource('events', AdminEventController::class);
+        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::resource('partners', PartnerController::class)->except(['show']);
+        Route::get('transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    });
 });

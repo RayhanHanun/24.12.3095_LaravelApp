@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\Event;
@@ -95,7 +96,7 @@ class DatabaseSeeder extends Seeder
             'description' => 'Adu mekanik dan strategi di turnamen Valorant kampus. Rebut total hadiah puluhan juta rupiah!',
             'date' => '2026-06-05 09:00:00',
             'location' => 'Gedung BSC Lt. 2',
-            'price' => 120000, 
+            'price' => 120000,
             'stock' => 16,
             'poster_path' => 'posters/valorant-rumble.png',
         ]);

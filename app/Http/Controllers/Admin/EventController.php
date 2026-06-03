@@ -47,6 +47,11 @@ class EventController extends Controller
         return view('admin.events.edit', compact('event', 'categories'));
     }
 
+    public function show(Event $event)
+    {
+        return view('admin.events.show', compact('event'));
+    }
+
     public function update(Request $request, Event $event)
     {
         $data = $request->validate([
@@ -67,7 +72,7 @@ class EventController extends Controller
 
     public function destroy(Event $event)
     {
-        $event->delete();
+        Event::whereKey($event->id)->delete();
         return redirect()->route('admin.events.index')->with('success', 'Data event berhasil dihapus secara permanen.');
     }
 
