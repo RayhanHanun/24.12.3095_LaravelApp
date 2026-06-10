@@ -12,6 +12,17 @@ max-w-3xl">
         <form action="{{ route('admin.events.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
+            @if ($errors->any())
+                <div class="mb-6 rounded-xl bg-red-100 text-red-700 p-4 text-sm font-semibold">
+                    <p class="font-bold mb-2">Data gagal disimpan</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2 uppercase
 
@@ -19,11 +30,6 @@ tracking-wide">Judul Event</label>
 
                 <input type="text" name="title" value="{{ old('title') }}"
                     class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl
-
-Modul Praktikum : [Digital Bisnis [SI148]] Hal. 43 dari 67
-
-Universitas AMIKOM Yogyakarta
-Fakultas Ilmu Komputer - Program Studi S1 Sistem Informasi
 
 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none
 transition font-medium"

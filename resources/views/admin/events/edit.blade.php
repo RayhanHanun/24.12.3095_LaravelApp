@@ -12,6 +12,17 @@ max-w-3xl">
             @csrf
             @method('PUT')
 
+            @if ($errors->any())
+                <div class="mb-6 rounded-xl bg-red-100 text-red-700 p-4 text-sm font-semibold">
+                    <p class="font-bold mb-2">Data gagal disimpan</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <div>
                 <label class="block text-sm font-bold text-slate-700 mb-2 uppercase
 
@@ -150,17 +161,20 @@ outline-none transition font-medium"
 tracking-wide">Poster Event
                     (Opsional)</label>
 
+                @if ($event->poster_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($event->poster_path))
+                    <div class="mb-3">
+                        <img src="{{ asset('storage/' . $event->poster_path) }}" alt="{{ $event->title }}"
+                            class="w-24 h-32 rounded-xl object-cover shadow-sm">
+                        <p class="text-sm text-slate-500 mt-1">Poster saat ini</p>
+                    </div>
+                @endif
+
                 <input type="file" name="poster" accept="image/*"
                     class="w-full px-5
 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4
 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition
 font-medium">
 
-                @if ($event->poster_path)
-                    <p class="text-sm text-slate-500 mt-2">Poster saat ini: <a
-                            href="{{ asset('storage/' . $event->poster_path) }}" target="_blank"
-                            class="text-indigo-600 hover:underline">Lihat</a></p>
-                @endif
                 @error('poster')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
                 @enderror

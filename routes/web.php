@@ -1,22 +1,31 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\EventController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
-use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\EventController;
+use App\Models\Event;
+use Illuminate\Support\Facades\Route;
 
 // Halaman Beranda (Home)
 Route::get('/', [EventController::class, 'index'])->name('welcome');
 
 // Halaman Detail Event
-Route::get('/event-detail', [EventController::class, 'show'])->name('event-detail');
+Route::get('/events/{event}', [EventController::class, 'show'])->name('events.show');
+Route::get('/event-detail', function () {
+    $event = Event::oldest()->first();
+
+    return $event
+        ? redirect()->route('events.show', $event)
+        : redirect()->route('welcome');
+})->name('event-detail');
 
 // Halaman Checkout
 Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
+Route::get('/checkout/{event}', [EventController::class, 'checkout'])->name('checkout.event');
 
 // Halaman Ticket (Setelah Bayar)
 Route::get('/ticket', function () {

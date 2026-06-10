@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
@@ -13,29 +14,34 @@ class EventController extends Controller
     {
         // Memakai relasi dan pengaturan limit paginasi (10 entri per halaman)
         $events = Event::with('category')->latest()->paginate(10);
+
         return view('admin.events.index', compact('events'));
     }
 
     public function create()
     {
         $categories = Category::all();
+
         return view('admin.events.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        // Menerapkan validasi data request dari pengguna
         $data = $request->validate([
-            'category_id' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
-            'price' => 'required|numeric',
-            'stock' => 'required|numeric'
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|numeric|min:1',
+            'poster' => 'nullable|image|max:2048',
         ]);
 
-        // Menyimpan data yang telah divalidasi ke dalam tabel menggunakan Model
+        if ($request->hasFile('poster')) {
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
+
         Event::create($data);
 
         return redirect()->route('admin.events.index')->with('success', 'Data Event berhasil ditambahkan.');
@@ -44,6 +50,7 @@ class EventController extends Controller
     public function edit(Event $event)
     {
         $categories = Category::all();
+
         return view('admin.events.edit', compact('event', 'categories'));
     }
 
@@ -55,24 +62,41 @@ class EventController extends Controller
     public function update(Request $request, Event $event)
     {
         $data = $request->validate([
-            'category_id' => 'required',
+            'category_id' => 'required|exists:categories,id',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'date' => 'required|date',
             'location' => 'required|string|max:255',
-
-            'price' => 'required|numeric',
-            'stock' => 'required|numeric'
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|numeric|min:1',
+            'poster' => 'nullable|image|max:2048',
         ]);
 
+        $oldPosterPath = $event->poster_path;
+
+        if ($request->hasFile('poster')) {
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
+
         $event->update($data);
+
+        if (isset($data['poster_path']) && $oldPosterPath) {
+            Storage::disk('public')->delete($oldPosterPath);
+        }
 
         return redirect()->route('admin.events.index')->with('success', 'Rincian data event berhasil diperbarui.');
     }
 
     public function destroy(Event $event)
     {
-        Event::whereKey($event->id)->delete();
+        $posterPath = $event->poster_path;
+
+        $event->delete();
+
+        if ($posterPath) {
+            Storage::disk('public')->delete($posterPath);
+        }
+
         return redirect()->route('admin.events.index')->with('success', 'Data event berhasil dihapus secara permanen.');
     }
 
