@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\EventController;
 use App\Models\Event;
 use Illuminate\Support\Facades\Route;
@@ -24,8 +25,11 @@ Route::get('/event-detail', function () {
 })->name('event-detail');
 
 // Halaman Checkout
-Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
-Route::get('/checkout/{event}', [EventController::class, 'checkout'])->name('checkout.event');
+Route::get('/checkout', function () {
+    return redirect()->route('welcome');
+})->name('checkout');
+Route::get('/checkout/{event}', [CheckoutController::class, 'create'])->name('checkout.create');
+Route::post('/checkout/{event}', [CheckoutController::class, 'store'])->name('checkout.store');
 
 // Halaman Ticket (Setelah Bayar)
 Route::get('/ticket', function () {
